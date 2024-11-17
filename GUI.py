@@ -18,7 +18,7 @@ class DataHandler(QObject):
 
     def set_pid(self, pid):
         self.pid = pid
-        self.pid_selected.emit(pid)  # 發射信號，傳遞選中的PID
+        self.pid_selected.emit(pid) 
     def get_pid(self):
         return self.pid
 class SelectPidsPopup(QDialog):
@@ -28,16 +28,15 @@ class SelectPidsPopup(QDialog):
         self.setMinimumSize(400, 300)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
-        self.data_handler = data_handler  # 傳入PID處理器
+        self.data_handler = data_handler 
 
         layout = QVBoxLayout()
 
-        self.table = QTableWidget(99, 2)  # Example with 10 rows and 2 columns
+        self.table = QTableWidget(99, 2)  
         self.table.setHorizontalHeaderLabels(["PID", "Name"])
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
 
-        # Populate table with example data
 
         pids = utils.get_pids()
         for row,(pid , name) in enumerate(pids.items()):
@@ -52,7 +51,7 @@ class SelectPidsPopup(QDialog):
     def on_double_click(self, row, column):
         pid = self.table.item(row, 0).text()
         self.data_handler.set_pid(int(pid))
-        print(f"Selected PID: {pid}")  # Simulate return selected PID
+        print(f"Selected PID: {pid}")  
         self.accept()
 
 
@@ -86,13 +85,13 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 800, 300)
 
         self.data_handler = DataHandler()
-        self.data_handler.pid_selected.connect(self.on_pid_selected)  # 連接信號
+        self.data_handler.pid_selected.connect(self.on_pid_selected) 
         self.luna = None
         
         self.text = "set pid please"
         self.init_ui()
-        self._is_dragging = False  # 記錄是否正在拖動
-        self._start_pos = None     # 記錄起始滑鼠位置
+        self._is_dragging = False  
+        self._start_pos = None     
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self._is_dragging = True
@@ -113,11 +112,11 @@ class MainWindow(QMainWindow):
         main_layout = QVBoxLayout(central_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-         # 水平按鈕佈局
+
         button_layout = QHBoxLayout()
         button_layout.setContentsMargins(10, 10, 10, 10)
         button_layout.setAlignment(Qt.AlignTop)
-        # 添加按鈕
+
         self.btn_select_pids = QPushButton("Select PIDs")
         self.btn_log_history = QPushButton("Log History")
         self.btn_select_pids.clicked.connect(self.show_select_pids_popup)
@@ -149,15 +148,13 @@ class MainWindow(QMainWindow):
     def paintEvent(self, event):
         painter = QPainter(self)
 
-        # 塗背景顏色
-        painter.setBrush(QColor(43, 43, 43))  # 背景色 (深灰)
+        painter.setBrush(QColor(43, 43, 43))  
         painter.setPen(Qt.NoPen)
         painter.drawRect(self.rect())
 
-        # 繪製文字
-        painter.setPen(QColor(255, 255, 255))  # 白色文字
+        painter.setPen(QColor(255, 255, 255))  
         painter.setFont(QFont("Arial", 16))
-        text_rect = self.rect().adjusted(0, 10, 0, 0)  # 調整文字區域
+        text_rect = self.rect().adjusted(0, 10, 0, 0)
         painter.drawText(text_rect, Qt.AlignTop | Qt.AlignCenter,self.text)
     def show_select_pids_popup(self):
         popup = SelectPidsPopup(self.data_handler)
@@ -168,7 +165,6 @@ class MainWindow(QMainWindow):
         popup.exec()
 
     def on_pid_selected(self,pid):
-        # TODO translate
         host_dll,hook_dll = utils.get_dll()
         self.luna = LunaHook.LunaHostWrapper(host_dll)
         self.luna.Luna_Inject(pid, os.path.abspath("LunaHook"))

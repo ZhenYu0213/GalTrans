@@ -22,23 +22,17 @@ def get_pids(exclude_system_processes=True):
     for p in psutil.process_iter(attrs=["pid", "name", "exe", "username"]):
         try:
             info = p.info
-            # 過濾條件
             if exclude_system_processes:
-                # 根據進程名稱排除
                 if info["name"] in exclude_names:
                     continue
-                
-                # 根據路徑排除
                 if info["exe"] and any(info["exe"].startswith(path) for path in system_dirs):
                     continue
-                
-                # 根據用戶排除 (例如 SYSTEM)
+
                 if info["username"] and info["username"].lower() == "nt authority\\system":
                     continue
-            
-            # 如果通過過濾，加入結果
+
             pids[info["pid"]] = info["name"]
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass  # 忽略無法訪問的進程
+            pass 
 
     return pids

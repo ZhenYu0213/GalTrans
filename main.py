@@ -1,4 +1,3 @@
-import translator
 import GUI
 import sys
 

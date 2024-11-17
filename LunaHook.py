@@ -58,17 +58,15 @@ QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
         
 class LunaHostWrapper:
     def __init__(self, dll_path):
-        # 載入 DLL
         self.dll = CDLL(dll_path)
 
-        self.xai_api = XAI_API()  # 傳入 XAI_API 實例
+        self.xai_api = XAI_API()  
         self.pids = []
         self.keepref = []
-        # 初始化常用函數
         self.init_functions()
 
     def init_functions(self):
-        # 定義 DLL 的函數及其參數類型
+
         self.Luna_SyncThread = self.dll.Luna_SyncThread
         self.Luna_SyncThread.argtypes = ThreadParam, c_bool
 
@@ -153,19 +151,3 @@ class LunaHostWrapper:
         self.embedcallback(text, text, tp)
     def embedcallback(self, text: str, trans: str, tp: ThreadParam):
         self.Luna_embedcallback(tp, text, trans)
-
-
-
-# dll_path = "LunaHook/LunaHost32.dll"  
-# luna = LunaHostWrapper(dll_path)
-
-
-# # 注入進程
-# process_id = 6256  # 目標進程 ID
-# dll = "LunaHook/LunaHook32.dll"
-# luna.Luna_Inject(process_id, os.path.abspath("LunaHook"))
-# #injectdll([process_id],32,dll)
-
-# import time
-# while True:
-#     time.sleep(0.5)

@@ -10,7 +10,7 @@ class XAI_API(QObject):
     def __init__(self) -> None:
         super(XAI_API,self).__init__()
         self.url = 'https://api.x.ai/v1/chat/completions'
-        self.authorization = 'Bearer xai-EOG7qai1CLEwwowGeuqOm3SPcfQyfiLPoMS8ncQ8TCZ5GL7HiRyFsPtc9LhHZyvFMOJRuDGsXKDvzGIH'
+        self.authorization = 'your api key'
 
         self.current_task = None  
         self.task_lock = threading.Lock()
@@ -62,12 +62,12 @@ class XAI_API(QObject):
             self.translate(task_to_process)
     def add_data(self, content):
         with self.task_lock:
-            self.current_task = content  # 覆盖旧数据
+            self.current_task = content  
             self.log.append(content)
             print(f"New task added: {content}")
 
     def stop(self):
         self.running = False
         with self.condition:
-            self.condition.notify_all()  # 確保工作執行緒可以停止
+            self.condition.notify_all() 
         self.worker_thread.join()
